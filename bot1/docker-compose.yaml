@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  pg:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${DB_NAME:-telegram_bot}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-telegram_bot}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    
+volumes:
+  pgdata:
